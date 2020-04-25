@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% if catalog.name != 'off' %} {{ catalog.name }} {% else %} {{catalog.link}} {% endif %} </title>
+
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-theme.min.css" />
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <script src="/static/js/qrcode.min.js" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <meta name="google" content="notranslate" />
+    <link rel="stylesheet" href="/static/css/my.css?_={{uuid}}" />
+
+    <script>
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v2.12';
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+  </head>
+
+
+
+  <body style="padding-top:0px;background: white;">
+
+    <div id="content" class="center_content">
+
+
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-default navbar-fixed-top sticky-top" style="margin-bottom: 5px; background-color:  white;">
+        <div class="container" style=" background-color: white;">
+
+
+          <ul class="nav navbar-nav navbar-left" >
+
+            <li >
+              <span class="navbar-brand" >
+
+                <img src="/static/{{catalog.logo}}?_={{uuid}}" height="40" width="65" style="     margin-left: -100px; color: #e0ac10;" />
+
+              </span>
+            </li>
+          </ul>
+
+
+
+          <ul class="nav navbar-nav navbar-right">
+
+
+
+
+            <div class="copyright">
+              <br/>
+              {% if catalog.activer_order  %}
+              <b><a  onclick="view_order()" ><span class="glyphicon glyphicon-shopping-cart" style="font-size:22px; color: #313849;" ></span> &nbsp;
+                </a></b>
+              <input type="hidden" id="activer_order" value="1" />
+              <br/>
+              {% endif %}
+
+
+              </ul>
+
+            </div>
+
+
+          </nav>
+
+        <input type="hidden" id="link" value="{{catalog.link}}" >
+        <input type="hidden" id="mesa" value="{{mesa}}" >
+        <input type="hidden" id="catalog_name" value="{{catalog.name}}" >
+        <input type="hidden" id="telephone1" value="{{catalog.telephone1}}" >
+        <input type="hidden" id="telephone2" value="{{catalog.telephone2}}" >
+        <input type="hidden" id="catalog_address" value="{{catalog.address}}" >
+
+        <input type="hidden" id="current_id" />
+
+
+
+
+        {% if catalog.active_board %}
+        <thead id="board">
+
+        </thead>
+        {% endif %}
+
+
+
+
+        <div class="container pedido"  id="pedido_div">
+          <div id="back" >
+            <b><a  onclick="show_category()" ><span class="glyphicon glyphicon-arrow-left" style="font-size:22px; margin-left: 10px; color: #313849;" ></span> &nbsp;
+              </a></b>
+
+            <div class="container fluid">
+              <section class="main row">
+                <article class="col-sm-12" style="color: rgba(112, 112, 112, 1); text-align: center; font-size: 20px; ">
+
+                  <td>
+                    Pedido / Order
+                  </td>
+                  <BR/>
+                  <div id="order"  ></div>
+
+                  <div id="campos">
+
+                    <div class="row" style="margin-bottom: 5px; ; margin-top: 5px; {% if mesa != ''  %} display: none; {% endif %}">
+                      <div class="col-sm-12"><input type="input" id="address" class="form-control" placeholder="Número de habitación / Room Number"
+                                                    onchange="change_field()"  onblur="change_field()"  /></div>
+                    </div>
+
+                    <div class="row" style="margin-bottom: 5px">
+                        <div class="col-sm-12"><select class="form-control selcls" name="message" id="message" >
+                            <option value hidden="">Forma de pago / Way to pay</option>
+                            <option value="Efectivo">Efectivo/Cash</option>
+                            <option value="Cargo a la habitación">Cargo a la habitación/Room charge</option>
+                        </select></div>
+                    </div>
+
+                    <div class="row" style="margin-bottom: 15px">
+                      <div class="col-sm-12"><input type="input" id="extra"  class="form-control"  placeholder="Aclaraciones / Aclarations"
+                                                    onchange="change_field()"  onblur="change_field()" /></div>
+                    </div>
+
+                  </div>
+
+
+                  <button type="button" class="btn btn-default" style="margin-bottom: 200px; background-color: rgba(241, 241, 241, 1); color: rgba(149, 149, 149, 1); " onclick="send_order_whastapp()">CONFIRMAR PEDIDO / CONFIRM</button>
+
+
+
+                  </div>
+                </article>
+              </section>
+
+          </div>
+
+        </div>
+
+        <div class="container pedido"  id="pedido_vacio">
+
+          <div id="back" >
+            <b><a onclick="show_category()" ><span class="glyphicon glyphicon-arrow-left" style="font-size:22px; margin-left: 10px; color: #313849;" ></span> &nbsp;
+              </a></b>
+            <div class="container fluid">
+              <section class="main row">
+                <article class="col-sm-12" style="color: rgba(112, 112, 112, 1); font-size: 20px; text-align: center; ">
+
+                  <td>
+                    Pedido / Order
+                  </td>
+                  <BR/><BR/><BR/><BR/>
+                  Aún no tenés productos para confirmar / You don't have products to confirm yet
+                  <BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/>
+                </article>
+              </section>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="container categorias" id="category_cards">
+          <div class="container">
+            <section class="main row">
+              <div class="col-sm-12" style="color: rgba(112, 112, 112, 1); text-align: center; font-size: 20px; border-bottom: #707070 ">
+                Menu
+              </div>
+            </section>
+            <section class="row">
+              <article class="col-sm-12" style="color: rgba(112, 112, 112, 1); text-align: center;">
+                {{catalog.top_html}}
+                <BR/>
+              </article>
+            </section>
+          </div>
+
+          <div class="container">
+            <div class="row">
+              <div class="col-12 mx-auto"></div>
+              {% for p in products %}
+              {% if (loop.index == 1) or (p.category.id !=  products[loop.index-2].category.id) %}
+              <div class="col-6 mx-auto  mb-2" >
+                <div class="card"
+                     style=" background-image:url( /static/{{p.category.photo1}}?_={{uuid}});"
+                     onclick="showme('category_{{ p.category.id}}', {{ p.category.id}} )"
+                     >
+                  <BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/><BR/>
+                  <div class="card-footer" style="background: rgba(0,0,0,0.76); color: rgba(255, 255, 255, 1);">
+                    <strong>  {{p.category.name}} {{flag}}</strong>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              {% endfor%}
+              <div class="col-6 mx-auto  mb-2" ></div>
+            </div>
+
+          </div>
+        </div>
+
+
+
+
+
+        <table>
+
+
+
+          {% for p in products %}
+
+          {% if (loop.index == 1) or (p.category.id !=  products[loop.index-2].category.id) %}
+
+          <div id="back" class="closeable category_{{ p.category.id}}">
+            <b><a onclick="show_category()" ><span class="glyphicon glyphicon-arrow-left" style="font-size:22px; margin-left: 10px; color: #313849; " ></span> &nbsp;
+              </a></b>
+            <div id="nombre_cat" class="closeable category_{{ p.category.id}}" style="color: rgba(112, 112, 112, 1); font-size: 20px; text-align: center; ">
+              {{p.category.name}}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if p.photo0 %}
+          <tr class="{%  if p.category.closeable %} closeable  {% endif %}  category_{{ p.category.id}}" >
+            <td colspan="2"  class="td_portada" >
+              <img class="img_portada" src="/static/{{p.photo0 }}"  >
+            </td>
+          </tr>
+          {% endif %}
+
+
+
+          <tr style="background-color: {{p.background_color}}; color: rgba(112, 112, 112, 1); font-size: {{p.font_size}};" class= "{%  if p.category.closeable %} closeable  {% endif %} category_{{ p.category.id}} {% if p.photo0 %}  tr_with_portada   {% endif %}  ">
+
+            <td style="border-right-color: {{p.background_color}};"   class= "{% if p.photo0 %} td_with_portada   {% endif %}".
+                {% if p.photo1 or catalog.activer_order %}
+                onclick="
+                         fxOpenModal([
+                         '/static/{{p.photo1 if p.photo1  }}',
+                         '/static/{{p.photo2 if p.photo2  }}',
+                         '/static/{{p.photo3 if p.photo3  }}',
+                         '/static/{{p.photo4 if p.photo4  }}',
+                         '/static/{{p.photo5 if p.photo5  }}' ],
+                         '{{"video" if p.video  }}' ,
+                                   '{{p.id}}',
+                                   '{{p.name}}',
+                                   '{{p.description if p.description}}',
+                                   ['{{p.price1  if p.price1}}', '{{p.price2  if p.price2}}', '{{p.price3  if p.price3}}'  ] )"
+                {% endif %}
+                >
+              <div id="div_html_hide_{{p.id}}" style="display: none" >
+                {% autoescape false %}
+                {{p.html}}
+                {% endautoescape %}
+              </div>
+              <div id="div_video_hide_{{p.id}}" style="display: none" >
+                {% autoescape false %}
+                {{p.video}}
+                {% endautoescape %}
+              </div>
+
+              {% if p.photo0 %}
+              <div class="div_left_img" >
+                <img class="img_portada_left" src="/static/{{p.photo0 }}"  >
+              </div>
+              {% endif %}
+              <div class="div_content_product">
+                {% if p.photo1 %}
+                <i class="glyphicon glyphicon-eye-open"></i>
+                {% endif %}
+                {{p.name}}
+                <br/> <i>
+                {{ p.description if p.description != None }}
+                </i>
+              </div>
+            </td>
+            <td style="text-align:right; border-left-color: {{p.background_color}};" class= "{% if p.photo0 %} td_with_portada   {% endif %}"  >
+              {% if p.price1 %}
+              <b>${{'%0.2f'| format(p.price1|float) }}</b>
+              {% endif %}
+              {% if p.price2 %}
+              <br/><b>${{'%0.2f'| format(p.price2|float) }}</b>
+              {% endif %}
+              {% if p.price3 %}
+              <br/><b>${{'%0.2f'| format(p.price3|float) }}</b>
+              {% endif %}
+              <br/>
+
+            </td>
+          </tr>
+          {% endfor %}
+          {% if catalog.schedule %}
+          <tr>
+            <td colspan="2" style="text-align: left;">
+              {% autoescape false %}
+              {{catalog.schedule}}
+              {% endautoescape %}
+            </td>
+          </tr>
+          {% endif %}
+
+
+          {% if catalog.description %}
+          <tr>
+            <td colspan="2" style="text-align: left;">
+              {% autoescape false %}
+              {{catalog.description}}
+              {% endautoescape %}
+            </td>
+          </tr>
+          {% endif %}
+
+          {% if catalog.bottom_html %}
+          <tr>
+            <td colspan="2" style="text-align: left;">
+              {% autoescape false %}
+              {{catalog.bottom_html}}
+              {% endautoescape %}
+            </td>
+          </tr>
+          {% endif %}
+
+        </table>
+
+
+
+
+
+
+
+
+        <!-- The Modal -->
+        <div id="myModal" class="my_modal">
+
+
+          <!-- The Close Button -->
+          <span class="close_img"> &times;</span>
+
+          <!-- Modal Content (The Image) -->
+          <div id="tabs">
+            <a id="tab_img"   style="color: #FFFFFF;" href="#" onclick="show_tab('img_div')"><span class="glyphicon glyphicon-picture"></span> &nbsp; Fotos</a>
+
+
+
+            <br/><br/>
+          </div>
+
+
+          <div id="img_div" class="my-modal-tab-div">
+
+            <img class="my-modal-content my-modal-content-img" id="img01"   onerror="this.src='static/img/none_small.png';"   onclick="next_img(2)" />
+            <img class="my-modal-content my-modal-content-img" id="img02"   onerror="this.src='static/img/none_small.png';"   onclick="next_img(3)" />
+            <img class="my-modal-content my-modal-content-img" id="img03"   onerror="this.src='static/img/none_small.png';"   onclick="next_img(4)" />
+            <img class="my-modal-content my-modal-content-img" id="img04"   onerror="this.src='static/img/none_small.png';"   onclick="next_img(5)" />
+            <img class="my-modal-content my-modal-content-img" id="img05"   onerror="this.src='static/img/none_small.png';"   onclick="next_img(1)" />
+          </div>
+          <div id="video_div" class="my-modal-tab-div ">
+
+          </div>
+          <div id="info_div" class="my-modal-tab-div" style="color: #FFFFFF">
+          </div>
+          <div id="sugerencia_div" class="my-modal-tab-div" style="color: #000000; ">
+          </div>
+          <!-- Modal Caption (Image Text) -->
+          <div id="caption"></div>
+        </div>
+
+
+
+        <script type="text/javascript">
+
+          var showme = function(class_category_show, id){
+            $(".closeable").hide();
+            $("."+class_category_show).show();
+            $("#back").show();
+            $("#category_cards").hide()
+            $("#busc").show()
+            window.scrollTo(0,0);
+          }
+
+          var show_category = function(){
+            $(".closeable").hide();
+            $("#category_cards").show()
+            $(".pedido").hide();
+            window.scrollTo(0,0);
+
+          }
+
+          var categories_element  = $($(".category_title")[0])
+          $.each(categories_element.attr('class').split(/\s+/),  function(index, item) {
+            if (item.startsWith('category_')) {
+              showme(item,categories_element.attr("category_id"))
+            }
+          })
+
+        </script>
+
+
+
+
+
+        <script src="/static/js/app.js?_={{uuid}}" ></script>
+        <script>
+
+          function view_order(){
+            $(".closeable").hide();
+            $(".categorias").hide()
+            if (pedido.length == 0){
+              $("#pedido_vacio").show()
+            }   else {
+              $("#pedido_div").show()
+              $("#campos").show()
+              var html='<table style="font-size: 12px;"><tr class="silver"><td>Producto</td><td>Cantidad</td><td>Precio</td></tr>';
+              var b=false;
+              total=0;
+              for (i in pedido){
+                if (pedido[i] === null) continue;
+                if (pedido[i] === undefined) continue;
+                if (pedido[i].cantidad === undefined) continue;
+                if (pedido[i].cantidad != 0){
+                  html = html + "<tr>"
+                    +"<td>"+ pedido[i].nombre + "</td>"
+                    +"<td>" + pedido[i].cantidad + "</td>"
+                    +"<td>$" + (parseInt(pedido[i].cantidad)*parseFloat(pedido[i].price)) + "</td>"
+                    +"</tr>" ;
+                  total= total + (parseInt(pedido[i].cantidad)*parseFloat(pedido[i].price)) ;
+                  b=true;
+                }
+              }
+              html=html + "<tr><td colspan='2'>Total:</td><td><b>$"+total+"</b></td> </tr> </table>"
+            }
+            if(typeof(Storage) !== "undefined") {
+              if (localStorage.address != undefined) $("#address").val(localStorage.address)
+              if (localStorage.phone != undefined)   $("#phone").val(localStorage.phone )
+            }
+
+            $("#order").html(html)
+
+            // $("#order_modal").modal()
+
+          }
+
+
+
+          function send_order_whastapp() {
+            if(typeof(Storage) !== "undefined") {
+              localStorage.address = $("#address").val()
+              localStorage.phone = $("#phone").val()
+              localStorage.extra = $("#extra").val()
+              localStorage.message = $("#message").val()
+              localStorage.paciente = $("#paciente").val()
+
+            }
+            var text='Pedido / Order: %0D%0AProducto - (Cantidad)%0D%0A';
+            var b=false;
+            for (i in pedido){
+              if (pedido[i] === null) continue;
+              if (pedido[i] === undefined) continue;
+              if (pedido[i].cantidad === undefined) continue;
+              if (pedido[i].cantidad != 0){
+                text = text + pedido[i].nombre + " - (" + pedido[i].cantidad + ")%0D%0A" ;
+                b=true;
+              }
+            }
+
+
+            if ($("#mesa").val() != '' ){
+              text=text + "Ubicacion: "+  $("#mesa").val() + " %0D%0A"
+            }
+            if ($("#address").val()  != undefined && $("#mesa").val() == '' ) {
+              text=text + "Habitación: "+  $("#address").val() + "%0D%0A"
+            }
+
+            if ($("#message").val() != '' ){text=text + "Forma de pago: "+  $("#message").val() + "%0D%0A"}
+
+
+            if ($("#gifcard").val()  != undefined && $("#gifcard").val()  != "") text=text + "Descuento: "+  $("#gifcard").val() + "%0D%0A"
+            if ($("#extra").val()    != undefined && $("#extra").val()  != "" && $("#mesa").val() == ''  ) text=text + "Aclaraciones extras: "+  $("#extra").val() + "%0D%0A"
+
+
+            if ($("#address").val()  == "" ){
+              alert("Por favor necesitamos su número de habitación para hacer el pedido / Please we need your room number to place the order");
+              return ;
+            }
+
+            if ($("#message").val()  == "" ){
+                alert("Por favor indicar forma de pago para hacer el pedido/Please complete way to pay to confirm order");
+                return  ;
+            }          
+           
+
+            var phone2 = $("#telephone2").val()
+            if (detectmob()){
+              pedido = [];
+              if(typeof(Storage) !== "undefined") {
+                localStorage.pedido = JSON.stringify(pedido)
+                var object = {value: "value", timestamp: new Date().getTime()}
+                localStorage.setItem("pedido_time", JSON.stringify(object));
+              }
+              window.open("whatsapp://send?phone="+phone2+"&text="+text,"_self")
+            }else{
+              alert("Plataforma no soportada para envio de whatsapp!")
+            }
+          }
+
+          if(typeof(Storage) !== "undefined") {
+            localStorage.address="";
+            localStorage.phone = "";
+          }
+
+
+          var fxOpenModal =  function(src, video,id, name, description,prices){
+
+            $("#info_div").html("");
+            $("#video_div").html("");
+            $("#sugerencia_div").html('<center><table class="modal-content-table"><thead><tr class="silver"><td><strong>Producto</strong></td> <td style="text-align: right"><strong>Precio</strong></td></tr></thead><tbody id="sugerencia_table"></tbody></table></center>')
+            $("#current_id").val(id)
+
+            if ($("#div_html_hide_"+id).html().trim() != "None"){
+              $("#tab_info").show()
+              $("#info_div").html($("#div_html_hide_"+id).html())
+              show_tab('info_div')
+            }else{
+              $("#tab_info").hide()
+            }
+
+
+            if (video == ''){
+              $("#tab_video").hide();
+
+            }else{
+              $("#tab_video").show();
+              $("#video_div").html($("#div_video_hide_"+id).html());
+              show_tab('video_div')
+            }
+
+
+
+
+            cantidad=0;
+            try{
+              cantidad = pedido[id].cantidad
+              cantidad_input=cantidad
+            }catch(e){
+              cantidad=0;
+              cantidad_input=''
+            }
+            html = '<div id="caption"><b>'+name+'</b><br><i>'+description+'</i><hr>'
+
+            if ($("#activer_order").val()=='1')   {
+              try{
+                price  = prices[0]
+                price2 = prices[1]
+                price3 = prices[2]
+              }catch(e){}
+
+              html=html+ '<div class="row"><div class="col-sm-4"></div>'
+                + '<div class="col-sm-2"><input class="form-control" type="number" value=1 id="replyNumber"'
+                +'  onfocus=" setTimeout(function() {$(\'#myModal\').scrollTop(99999999);},250) "'
+                +'  onclick=" setTimeout(function() {$(\'#myModal\').scrollTop(99999999);},500) "'
+                +'  onmouseup=" setTimeout(function() {$(\'#myModal\').scrollTop(99999999);},1000) "'
+                +  'min="0" step="1" value="'+cantidad_input+'" placeholder="Cantidad a pedir" /></div></div>'
+                + '<div class="row"><div class="col-sm-5"></div>'
+                +' <div class="col-sm-2"><button type="button"  onclick=\'add("'+id+'","'+name+'","'+description+'",$("#replyNumber").val(),"'+price+'")\'  class="btn btn-primary" style="color:white;">Pedir/Add</button></div></div>'
+            }
+            html= html  +'</div>'
+
+
+            modal.style.display = "block";
+            var flasExistImg= false;
+            for (var i in src){
+              var elementId = "img0"+(parseInt(i)+1)
+              var modalImg = document.getElementById(elementId);
+              if (modalImg != undefined){
+                if (src[i] != undefined && src[i] != '/static/'){
+                  modalImg.src = src[i];
+                  if (!$(modalImg).hasClass( "my-modal-content" )){
+                    $(modalImg).addClass( "my-modal-content" )
+                  }
+                  flasExistImg=true;
+                }else{
+                  modalImg.src = '/static/img/none.png'
+                  $(modalImg).removeClass( "my-modal-content" )
+                }
+              }
+            }
+            $("#tab_img").show();
+            if (!flasExistImg){
+              $("#tab_img").hide();
+              $("#img_div").hide();
+            }else{
+              show_tab('img_div')
+            }
+
+            captionText.innerHTML = html;
+            next_img(1);
+          }
+
+          $(".closeable").hide();
+          show_category()
+
+        </script>
+        </div>
+      </body>
+    </html>
